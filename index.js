@@ -3,12 +3,8 @@ const app = express();
 const port = 5000;
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-
-const mongoose = require("mongoose");
-mongoose.set("strictQuery", false);
-
 const config = require("./config/key");
-
+const { auth } = require("./middleware/auth");
 const { User } = require("./models/User");
 
 //application/x-www-form-urlencoded
@@ -17,6 +13,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // application/json
 app.use(bodyParser.json());
 app.use(cookieParser());
+
+const mongoose = require("mongoose");
+mongoose.set("strictQuery", false);
 
 mongoose
     .connect(config.mongoURI)
@@ -66,6 +65,20 @@ app.post("/api/users/login", (req, res) => {
                     .json({ loginSuccess: true, userId: user._id });
             });
         });
+    });
+});
+
+app.get("/app/users/auth", auth, (req, res) => {
+    // 여기 까지 미들웨어를 통과해 왔다는 얘기는 Authentication이 True라는 말.
+    res.status(200).json({
+        _id: req.user._id,
+        isAdmin: req.user.role === 0 ? false : true,
+        isAuth: true,
+        email: req.user.email,
+        name: req.user.name,
+        lastname: req.user.lastname,
+        role: req.user.role,
+        image: req.user.image,
     });
 });
 
