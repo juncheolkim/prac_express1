@@ -11,20 +11,6 @@ function App() {
     return (
         <Router>
             <div>
-                {/* <ul>
-                    <li>
-                        <Link to="/">LandingPage</Link>
-                    </li>
-                    <li>
-                        <Link to="/login">Login</Link>
-                    </li>
-                    <li>
-                        <Link to="/register">Register</Link>
-                    </li>
-                </ul>
-
-                <hr /> */}
-
                 <Routes>
                     <Route path="/" element={<LandingPage />} />
                     <Route path="/login" element={<LoginPage />} />
