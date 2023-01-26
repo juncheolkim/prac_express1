@@ -1,29 +1,50 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { loginUser } from "../../../_actions/user_action";
+import { registerUser } from "../../../_actions/user_action";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [Email, setEmail] = useState("");
     const [Password, setPassword] = useState("");
+    const [Name, setName] = useState("");
+    const [ConfirmPassword, setConfirmPassword] = useState("");
 
     const onEmailHandler = (event) => {
         setEmail(event.currentTarget.value);
     };
+    const onNameHandler = (event) => {
+        setName(event.currentTarget.value);
+    };
     const onPasswordHandler = (event) => {
         setPassword(event.currentTarget.value);
+    };
+    const onConfirmPasswordHandler = (event) => {
+        setConfirmPassword(event.currentTarget.value);
     };
 
     const onSubmitHandler = (event) => {
         event.preventDefault(); // 이거 안하면 페이지가 새로고침된다.
 
+        if (Password !== ConfirmPassword) {
+            return alert("비밀번호와 비밀번호 확인은 같아야 합니다.");
+        }
+
         let body = {
             email: Email,
+            name: Name,
             password: Password,
         };
 
-        dispatch(loginUser(body));
+        dispatch(registerUser(body)).then((res) => {
+            if (res.payload.success) {
+                navigate("/login");
+            } else {
+                alert("Failed to sign up");
+            }
+        });
     };
 
     return (
@@ -42,6 +63,10 @@ function Register() {
             >
                 <label>Email</label>
                 <input type="email" value={Email} onChange={onEmailHandler} />
+
+                <label>Name</label>
+                <input type="text" value={Name} onChange={onNameHandler} />
+
                 <label>Password</label>
                 <input
                     type="password"
@@ -49,8 +74,15 @@ function Register() {
                     onChange={onPasswordHandler}
                 />
 
+                <label>Confirm Password</label>
+                <input
+                    type="password"
+                    value={ConfirmPassword}
+                    onChange={onConfirmPasswordHandler}
+                />
+
                 <br />
-                <button>Login</button>
+                <button>회원가입</button>
             </form>
         </div>
     );
