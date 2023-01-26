@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../../_actions/user_action";
+import { useNavigate } from "react-router-dom";
 
-function LoginPage() {
+function LoginPage(props) {
     const dispatch = useDispatch();
+
+    const navigate = useNavigate();
 
     const [Email, setEmail] = useState("");
     const [Password, setPassword] = useState("");
@@ -23,7 +26,13 @@ function LoginPage() {
             password: Password,
         };
 
-        dispatch(loginUser(body));
+        dispatch(loginUser(body)).then((res) => {
+            if (res.payload.loginSuccess) {
+                navigate("/");
+            } else {
+                alert("Error");
+            }
+        });
     };
 
     return (
